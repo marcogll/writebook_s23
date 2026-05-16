@@ -1,0 +1,13 @@
+services:
+  writebook:
+    image: ghcr.io/marcogll/writebook_s23:latest
+    ports:
+      - "${PORT:-3000}:80"
+    volumes:
+      - writebook_storage:/rails/storage
+    env_file:
+      - .env
+    restart: unless-stopped
+
+volumes:
+  writebook_storage:

@@ -1,58 +1,134 @@
-# Writebook
+# Writebook S23
 
-### Instantly publish your own books on the web for free, no publisher required.
+### Fork de Writebook con protección de contenido integrada.
 
 Writebook is an easy-to-use application for publishing content on the web.
 Content is authored in Markdown, and books can contain picture pages, chapters, and title pages.
 Books can be published privately or publicly, and are searchable.
 
-## How to get Writebook
+Este fork agrega **protección básica contra copia** para aumentar la fricción en entornos corporativos.
 
-Writebook is distributed as a Docker image.
-The simplest way to install and run it is by using [ONCE](https://github.com/basecamp/once).
+## Protección de Contenido
 
-To get started, paste this snippet into a terminal on the machine where you want to install Writebook:
+Las siguientes medidas se aplican automáticamente en páginas de lectura para usuarios autenticados:
+
+- **Selección de texto deshabilitada** globalmente (excluye inputs, textareas y editores)
+- **Copy/cut/click derecho bloqueados** vía JavaScript
+- **Watermark dinámico** con email del usuario, timestamp e IP parcial superpuesto en el contenido
+- **Impresión bloqueada** via CSS `@media print`
+
+> Estas medidas disuaden la copia casual pero no previenen screenshots o usuarios técnicos.
+
+## Despliegue con Docker Compose
+
+### Requisitos
+
+- Docker y Docker Compose instalados
+- Un dominio o acceso local
+
+### Quick start
+
+1. Clona este repositorio:
+
+```sh
+git clone https://github.com/marcogll/writebook_s23.git
+cd writebook_s23
+```
+
+2. Copia y configura el archivo de entorno:
+
+```sh
+cp .env.example .env
+```
+
+3. Inicia los servicios:
+
+```sh
+docker compose up -d
+```
+
+4. Accede a `http://localhost:3000`
+
+### Docker Compose
+
+```yaml
+services:
+  writebook:
+    image: ghcr.io/marcogll/writebook_s23:latest
+    ports:
+      - "${PORT:-3000}:80"
+    volumes:
+      - writebook_storage:/rails/storage
+    env_file:
+      - .env
+    restart: unless-stopped
+
+volumes:
+  writebook_storage:
+```
+
+### Variables de entorno (.env)
+
+| Variable | Descripción | Ejemplo |
+|---|---|---|
+| `DISABLE_SSL` | Sirve sin SSL | `true` |
+| `SSL_DOMAIN` | Dominio con SSL automático | `docs.miempresa.com` |
+| `RAILS_MAX_THREADS` | Hilos de Rails | `5` |
+| `PORT` | Puerto del host | `3000` |
+
+## Despliegue en Coolify
+
+1. Conecta el repositorio `marcogll/writebook_s23`
+2. Selecciona **Docker Compose** como tipo de despliegue
+3. Usa el `docker-compose.yml` incluido
+4. Configura las variables de entorno en la UI de Coolify
+5. Deploy
+
+## Despliegue manual con Docker
+
+Si prefieres configurar la imagen manualmente:
+
+```sh
+docker run -d \
+  --name writebook \
+  -p 3000:80 \
+  -v writebook_data:/rails/storage \
+  -e DISABLE_SSL=true \
+  ghcr.io/marcogll/writebook_s23:latest
+```
+
+## Cómo obtener Writebook original
+
+Writebook original es distribuido como imagen Docker por Basecamp.
+La forma más simple de instalarlo es usando [ONCE](https://github.com/basecamp/once):
 
 ```sh
 curl https://get.once.com/writebook | sh
 ```
 
-## Deploying manually with Docker
+## Desarrollo local
 
-If you'd rather set the Docker image up yourself, you can use `docker run` or `docker compose` to do that.
-The official image is `ghcr.io/basecamp/writebook`.
-
-You'll need to route the incoming web traffic to ports 80 and 443 (or just 80 if you run without SSL).
-To persist the storage of the application, mount a Docker volume to `/rails/storage`.
-
-You can configure the SSL setting with the following environment variables:
-
-- `SSL_DOMAIN` - enable automatic SSL via Let's Encrypt for the given domain name
-- `DISABLE_SSL` - alternatively, set `DISABLE_SSL` to serve over plain HTTP
-
-## Running in development
-
-Install dependencies:
+Instala dependencias:
 
 ```sh
 bin/setup
 ```
 
-Start the development server:
+Inicia el servidor de desarrollo:
 
 ```sh
 bin/dev
 ```
 
-## Content Protection
+## Build de la imagen Docker
 
-This fork includes basic anti-copy measures to increase friction for casual copying:
+```sh
+docker build -t ghcr.io/marcogll/writebook_s23:latest .
+```
 
-- **Text selection disabled** on reading pages (inputs, textareas, and editors are excluded)
-- **Copy/cut/context menu blocked** on reading pages
-- **Dynamic watermark** showing user email, timestamp, and partial IP overlaid on reading pages
-- **Print blocked** via CSS
+Para push a GHCR necesitas un token con scope `write:packages`:
 
-These protections apply only to authenticated users viewing books/pages. Admin and editing interfaces are unaffected.
-
-> Note: These measures deter casual copying but cannot prevent determined users or screenshots.
+```sh
+echo $CR_PAT | docker login ghcr.io -u TU_USUARIO --password-stdin
+docker push ghcr.io/marcogll/writebook_s23:latest
+```
