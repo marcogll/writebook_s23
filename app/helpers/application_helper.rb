@@ -14,6 +14,7 @@ module ApplicationHelper
   end
 
   def reading_page?
+    return false if signed_in?
     controller_name == "leafables" && action_name == "show" ||
       controller_name == "books" && action_name == "show"
   end
