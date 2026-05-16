@@ -1,55 +1,46 @@
 # Writebook S23
 
-### Fork de Writebook con protección de contenido integrada.
+Fork of [Writebook](https://github.com/basecamp/writebook) with integrated content protection.
 
-Writebook is an easy-to-use application for publishing content on the web.
-Content is authored in Markdown, and books can contain picture pages, chapters, and title pages.
-Books can be published privately or publicly, and are searchable.
+Writebook is an easy-to-use application for publishing content on the web. Content is authored in Markdown, and books can contain picture pages, chapters, and title pages. Books can be published privately or publicly, and are searchable.
 
-Este fork agrega **protección básica contra copia** para aumentar la fricción en entornos corporativos.
+## Content Protection
 
-## Protección de Contenido
+This fork adds basic anti-copy measures to increase friction in corporate environments. Protection is automatically enabled on all reading pages (both authenticated and public):
 
-Las siguientes medidas se aplican automáticamente en páginas de lectura para usuarios autenticados:
+- **Text selection disabled** globally (excludes inputs, textareas, and editors)
+- **Copy/cut/right-click blocked** via JavaScript
+- **Dynamic watermark** with user email, timestamp, and partial IP overlaid on content
+- **Print blocked** via CSS `@media print`
 
-- **Selección de texto deshabilitada** globalmente (excluye inputs, textareas y editores)
-- **Copy/cut/click derecho bloqueados** vía JavaScript
-- **Watermark dinámico** con email del usuario, timestamp e IP parcial superpuesto en el contenido
-- **Impresión bloqueada** via CSS `@media print`
+> These measures deter casual copying but do not prevent screenshots or technical users.
 
-> Estas medidas disuaden la copia casual pero no previenen screenshots o usuarios técnicos.
+## Quick Start
 
-## Despliegue con Docker Compose
+### Docker Compose
 
-### Requisitos
-
-- Docker y Docker Compose instalados
-- Un dominio o acceso local
-
-### Quick start
-
-1. Clona este repositorio:
+1. Clone the repository:
 
 ```sh
 git clone https://github.com/marcogll/writebook_s23.git
 cd writebook_s23
 ```
 
-2. Copia y configura el archivo de entorno:
+2. Configure environment variables:
 
 ```sh
 cp .env.example .env
 ```
 
-3. Inicia los servicios:
+3. Start the services:
 
 ```sh
 docker compose up -d
 ```
 
-4. Accede a `http://localhost:3000`
+4. Access at `http://localhost:3000`
 
-### Docker Compose
+### docker-compose.yml
 
 ```yaml
 services:
@@ -67,26 +58,26 @@ volumes:
   writebook_storage:
 ```
 
-### Variables de entorno (.env)
+### Environment Variables
 
-| Variable | Descripción | Ejemplo |
+| Variable | Description | Example |
 |---|---|---|
-| `DISABLE_SSL` | Sirve sin SSL | `true` |
-| `SSL_DOMAIN` | Dominio con SSL automático | `docs.miempresa.com` |
-| `RAILS_MAX_THREADS` | Hilos de Rails | `5` |
-| `PORT` | Puerto del host | `3000` |
+| `DISABLE_SSL` | Serve without SSL | `true` |
+| `SSL_DOMAIN` | Domain for automatic SSL | `docs.example.com` |
+| `RAILS_MAX_THREADS` | Rails thread count | `5` |
+| `PORT` | Host port | `3000` |
 
-## Despliegue en Coolify
+## Deployment
 
-1. Conecta el repositorio `marcogll/writebook_s23`
-2. Selecciona **Docker Compose** como tipo de despliegue
-3. Usa el `docker-compose.yml` incluido
-4. Configura las variables de entorno en la UI de Coolify
+### Coolify
+
+1. Connect the repository `marcogll/writebook_s23`
+2. Select **Docker Compose** as deployment type
+3. Use the included `docker-compose.yml`
+4. Configure environment variables in the Coolify UI
 5. Deploy
 
-## Despliegue manual con Docker
-
-Si prefieres configurar la imagen manualmente:
+### Manual Docker
 
 ```sh
 docker run -d \
@@ -97,32 +88,44 @@ docker run -d \
   marcogll/writebook_s23:latest
 ```
 
-## Cómo obtener Writebook original
-
-Writebook original es distribuido como imagen Docker por Basecamp.
-La forma más simple de instalarlo es usando [ONCE](https://github.com/basecamp/once):
+### Build the Docker Image
 
 ```sh
-curl https://get.once.com/writebook | sh
+# For amd64 (most servers)
+docker buildx build --platform linux/amd64 -t marcogll/writebook_s23:latest --push .
+
+# For arm64 (Apple Silicon)
+docker buildx build --platform linux/arm64 -t marcogll/writebook_s23:latest --push .
 ```
 
-## Desarrollo local
+## Local Development
 
-Instala dependencias:
+Install dependencies:
 
 ```sh
 bin/setup
 ```
 
-Inicia el servidor de desarrollo:
+Start the development server:
 
 ```sh
 bin/dev
 ```
 
-## Build de la imagen Docker
+Run tests:
 
 ```sh
-docker build -t marcogll/writebook_s23:latest .
-docker push marcogll/writebook_s23:latest
+bin/rails test
 ```
+
+## Original Writebook
+
+Writebook is distributed as a Docker image by Basecamp. The simplest way to install the original version is using [ONCE](https://github.com/basecamp/once):
+
+```sh
+curl https://get.once.com/writebook | sh
+```
+
+## License
+
+This fork inherits the license of the original Writebook project.
