@@ -1,0 +1,68 @@
+/* Content Protection - Anti-copy measures */
+
+/* Disable text selection globally */
+body.content-protection-enabled {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Re-enable selection for form elements */
+body.content-protection-enabled input,
+body.content-protection-enabled textarea,
+body.content-protection-enabled [contenteditable="true"],
+body.content-protection-enabled [data-trix-editor],
+body.content-protection-enabled .trix-content,
+body.content-protection-enabled [role="textbox"],
+body.content-protection-enabled [contenteditable] {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+/* Block printing */
+@media print {
+  body.content-protection-enabled {
+    display: none !important;
+  }
+
+  body.content-protection-enabled::before {
+    content: "Printing is not allowed.";
+    display: block;
+    font-size: 24px;
+    text-align: center;
+    padding: 40px;
+  }
+}
+
+/* Dynamic Watermark */
+.content-watermark {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+  opacity: 0.04;
+}
+
+.content-watermark__text {
+  position: absolute;
+  font-size: 14px;
+  font-family: system-ui, -apple-system, sans-serif;
+  color: #000;
+  white-space: nowrap;
+  transform: rotate(-35deg);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .content-watermark__text {
+    color: #fff;
+  }
+}

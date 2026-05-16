@@ -31,7 +31,10 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body data-controller="fullscreen lightbox touch">
+  <body
+    data-controller="fullscreen lightbox touch<%= " content-protection" if content_protection_enabled? %>"
+    class="<%= "content-protection-enabled" if content_protection_enabled? %>"
+  >
     <header id="header">
       <%= yield :header %>
     </header>
@@ -53,5 +56,17 @@
     </footer>
 
     <%= render "layouts/lightbox" %>
+
+    <% if content_protection_enabled? && (watermark = watermark_data) %>
+      <div class="content-watermark" aria-hidden="true">
+        <% 20.times do |i| %>
+          <% 10.times do |j| %>
+            <span class="content-watermark__text" style="top: <%= i * 12 %>%; left: <%= j * 12 %>%;">
+              <%= watermark[:user_email] %> • <%= watermark[:timestamp] %> • <%= watermark[:ip] %>
+            </span>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
   </body>
 </html>

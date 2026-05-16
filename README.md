@@ -43,3 +43,16 @@ Start the development server:
 ```sh
 bin/dev
 ```
+
+## Content Protection
+
+This fork includes basic anti-copy measures to increase friction for casual copying:
+
+- **Text selection disabled** on reading pages (inputs, textareas, and editors are excluded)
+- **Copy/cut/context menu blocked** on reading pages
+- **Dynamic watermark** showing user email, timestamp, and partial IP overlaid on reading pages
+- **Print blocked** via CSS
+
+These protections apply only to authenticated users viewing books/pages. Admin and editing interfaces are unaffected.
+
+> Note: These measures deter casual copying but cannot prevent determined users or screenshots.
