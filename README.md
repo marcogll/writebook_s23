@@ -54,7 +54,7 @@ docker compose up -d
 ```yaml
 services:
   writebook:
-    image: ghcr.io/marcogll/writebook_s23:latest
+    image: marcogll/writebook_s23:latest
     ports:
       - "${PORT:-3000}:80"
     volumes:
@@ -94,7 +94,7 @@ docker run -d \
   -p 3000:80 \
   -v writebook_data:/rails/storage \
   -e DISABLE_SSL=true \
-  ghcr.io/marcogll/writebook_s23:latest
+  marcogll/writebook_s23:latest
 ```
 
 ## Cómo obtener Writebook original
@@ -123,12 +123,6 @@ bin/dev
 ## Build de la imagen Docker
 
 ```sh
-docker build -t ghcr.io/marcogll/writebook_s23:latest .
-```
-
-Para push a GHCR necesitas un token con scope `write:packages`:
-
-```sh
-echo $CR_PAT | docker login ghcr.io -u TU_USUARIO --password-stdin
-docker push ghcr.io/marcogll/writebook_s23:latest
+docker build -t marcogll/writebook_s23:latest .
+docker push marcogll/writebook_s23:latest
 ```
