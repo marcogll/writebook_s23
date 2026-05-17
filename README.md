@@ -126,6 +126,24 @@ Writebook is distributed as a Docker image by Basecamp. The simplest way to inst
 curl https://get.once.com/writebook | sh
 ```
 
+## Roadmap
+
+See [I18N_PLAN.md](I18N_PLAN.md) for the full internationalization plan.
+
+### Completed
+- [x] Content protection (anti-copy, watermark, print block)
+- [x] Docker Compose deployment support
+- [x] Coolify deployment
+- [x] README cleanup
+
+### In Progress
+- [ ] **Internationalization (EN/ES)** — Language detection, locale files, view extraction
+
+### Planned
+- [ ] User language preference persistence
+- [ ] Language selector in navbar
+- [ ] Full Spanish translation
+
 ## License
 
 This fork inherits the license of the original Writebook project.
